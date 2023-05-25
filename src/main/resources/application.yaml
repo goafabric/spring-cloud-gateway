@@ -1,0 +1,17 @@
+server:
+  port: 8082
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: baeldung_route
+          uri: http://baeldung.com/spring-cloud-gateway
+          predicates:
+            - Path=/doc
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
