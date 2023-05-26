@@ -8,10 +8,12 @@ spring:
         - id: baeldung_route
           uri: http://baeldung.com/spring-cloud-gateway
           predicates:
-            - Path=/doc
+            - Path=/baeldung
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+
+management.endpoint.gateway.enabled: "true"
