@@ -1,0 +1,3 @@
+#!/bin/bash
+./gradlew clean nativeCompile
+./build/native/nativeCompile/spring-cloud-gateway -Xmx32m
