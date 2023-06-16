@@ -63,7 +63,7 @@ services:
       spring.config.location: "/usr/share/conf/"
 
 #      server.tomcat.threads.max: "20"
-#      server.forward-headers-strategy: FRAMEWORK
+#´      server.forward-headers-strategy: FRAMEWORK
 
 volumes:
     tmp:
