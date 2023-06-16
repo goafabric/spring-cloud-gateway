@@ -6,9 +6,25 @@ spring:
     gateway:
       routes:
         - id: baeldung_route
-          uri: http://baeldung.com/spring-cloud-gateway
+          uri: http://baeldung.com
           predicates:
-            - Path=/baeldung
+            - Path=/baeldung/**
+          filters:
+            - RewritePath=/baeldung/(?<path>.*), /$\{path}
+
+        - id: forward_route
+          uri: http://example.com
+          predicates:
+            - Path=/forward-url/**
+          filters:
+            - RewritePath=/forward-url/(?<path>.*), /$\{path}
+
+        - id: amazon_route
+          uri: http://www.amazon.com
+          predicates:
+            - Path=/amazon/**
+          filters:
+            - RewritePath=/amazon/(?<path>.*), /$\{path}
 
 management:
   endpoints:
