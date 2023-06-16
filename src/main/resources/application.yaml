@@ -12,20 +12,6 @@ spring:
           filters:
             - RewritePath=/baeldung/(?<path>.*), /$\{path}
 
-        - id: forward_route
-          uri: http://example.com
-          predicates:
-            - Path=/forward-url/**
-          filters:
-            - RewritePath=/forward-url/(?<path>.*), /$\{path}
-
-        - id: amazon_route
-          uri: http://www.amazon.com
-          predicates:
-            - Path=/amazon/**
-          filters:
-            - RewritePath=/amazon/(?<path>.*), /$\{path}
-
 management:
   endpoints:
     web:

@@ -5,14 +5,12 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: baeldung_route
-          uri: http://baeldung.com/spring-cloud-gateway
+        - id: callee_route
+          uri: http://application:50900
           predicates:
-            - Path=/baeldung
-        - id: amazon_route
-          uri: http://www.amazon.de
-          predicates:
-            - Path=/amazon
+            - Path=/callee/**
+          filters:
+            - RewritePath=/callee/(?<path>.*), /$\{path}
 
 management:
   endpoints:
