@@ -17,3 +17,6 @@ management:
         include: "*"
 
 management.endpoint.gateway.enabled: "true"
+
+
+#spring.cloud.gateway.routes=[{id=baeldung_route, uri=http://baeldung.com/spring-cloud-gateway, predicates=[Path=/baeldung]}]

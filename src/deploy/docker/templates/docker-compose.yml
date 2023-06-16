@@ -1,0 +1,50 @@
+version: "3.7"
+
+services:
+  application:
+    container_name: callee-service-application
+    image:  goafabric/callee-service-native${_Values_server_arch}:3.0.3
+    restart: 'no'
+    ports:
+      - "50900:50900"
+    entrypoint: "/workspace/org.goafabric.calleeservice.Application -Xmx32m"
+
+    volumes:
+      - tmp:/tmp
+      - applogs:/usr/share/logs
+    networks:
+      - ${_Values_root_name}-net
+    environment:
+      #application
+      TZ: Europe/Berlin
+      server.port: "${_Values_service_port}"
+      server.tomcat.threads.max: "20"
+      server.forward-headers-strategy: FRAMEWORK
+
+      #security
+      security.authentication.enabled: "false"
+
+      #monitoring
+      management.endpoint.health.show-details: always
+      management.endpoints.web.exposure.include: "health,heapdump,circuitbreakers,prometheus"
+
+      #zipkin/jaeger
+      spring.application.name: "callee-service"
+      management.zipkin.tracing.endpoint: "http://host.docker.internal:9411/api/v2/spans"
+      management.tracing.sampling.probability: "1.0"
+      management.tracing.enabled: "true"
+      logging.level.zipkin2.reporter: "ERROR"
+
+      #log levels
+      logging.level.root: "WARN"
+      logging.level.org.goafabric: "INFO"
+      logging.level.org.springframework: "INFO"
+
+
+volumes:
+    tmp:
+    applogs:
+
+networks:
+  callee-service-net:
+    driver: bridge
