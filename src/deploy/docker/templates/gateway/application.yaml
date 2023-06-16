@@ -1,0 +1,26 @@
+server:
+  port: 8082
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: baeldung_route
+          uri: http://baeldung.com/spring-cloud-gateway
+          predicates:
+            - Path=/baeldung
+        - id: amazon_route
+          uri: http://www.amazon.de
+          predicates:
+            - Path=/amazon
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+management.endpoint.gateway.enabled: "true"
+
+
+#spring.cloud.gateway.routes=[{id=baeldung_route, uri=http://baeldung.com/spring-cloud-gateway, predicates=[Path=/baeldung]}]

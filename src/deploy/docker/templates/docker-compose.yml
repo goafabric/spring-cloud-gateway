@@ -17,7 +17,7 @@ services:
     environment:
       #application
       TZ: Europe/Berlin
-      server.port: "${_Values_service_port}"
+      server.port: "50900"
       server.tomcat.threads.max: "20"
       server.forward-headers-strategy: FRAMEWORK
 
@@ -40,6 +40,30 @@ services:
       logging.level.org.goafabric: "INFO"
       logging.level.org.springframework: "INFO"
 
+
+  gateway:
+    container_name: gateway
+    image:  goafabric/spring-cloud-gateway-native${_Values_server_arch}:1.0.0-SNAPSHOT
+    restart: 'no'
+    ports:
+      - "8080:8080"
+    command: -Xmx32m
+    
+    volumes:
+      - tmp:/tmp
+      - applogs:/usr/share/logs
+      - ./gateway/application.yaml:/usr/share/conf/application.yaml
+    networks:
+      - ${_Values_root_name}-net
+    environment:
+      #application
+      TZ: Europe/Berlin
+      server.port: "8080"
+
+      spring.config.location: "/usr/share/conf/"
+
+#      server.tomcat.threads.max: "20"
+#      server.forward-headers-strategy: FRAMEWORK
 
 volumes:
     tmp:
