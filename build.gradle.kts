@@ -1,7 +1,7 @@
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 group = "org.goafabric"
-version = "1.0.0-SNAPSHOT"
+version = "1.0.0-auth-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 val dockerRegistry = "goafabric"
@@ -12,7 +12,7 @@ extra["springCloudVersion"] = "2022.0.3"
 plugins {
 	java
 	jacoco
-	id("org.springframework.boot") version "3.1.0"
+	id("org.springframework.boot") version "3.1.1"
 	id("io.spring.dependency-management") version "1.1.0"
 	id("org.graalvm.buildtools.native") version "0.9.22"
 	id("com.google.cloud.tools.jib") version "3.3.1"

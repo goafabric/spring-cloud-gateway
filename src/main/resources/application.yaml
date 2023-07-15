@@ -1,5 +1,6 @@
 server:
   port: 8080
+  forward-headers-strategy: FRAMEWORK
 
 spring:
   cloud:
@@ -11,6 +12,12 @@ spring:
             - Path=/baeldung/**
           filters:
             - RewritePath=/baeldung/(?<path>.*), /$\{path}
+        - id: callee_route
+          uri: http://localhost:50900
+          predicates:
+            - Path=/callee/**
+          filters:
+            - RewritePath=/callee/(?<path>.*), /$\{path}
 
 management:
   endpoints:
