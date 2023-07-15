@@ -30,7 +30,7 @@ spring:
             - Path=/callee/**
           filters:
             - RewritePath=/callee/(?<path>.*), /$\{path}
-            - AddRequestHeader=X-TenantId, 555
+#            - AddRequestHeader=X-TenantId, 555
 
   security:
     oauth2:
