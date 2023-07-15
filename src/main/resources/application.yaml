@@ -2,6 +2,15 @@ server:
   port: 8080
   forward-headers-strategy: FRAMEWORK
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+management.endpoint.gateway.enabled: "true"
+
+
 spring:
   cloud:
     gateway:
@@ -18,14 +27,23 @@ spring:
             - Path=/callee/**
           filters:
             - RewritePath=/callee/(?<path>.*), /$\{path}
+  security:
+    oauth2:
+      base-uri: "http://127.0.0.1:30200/oidc"
+      authorization-uri: "http://127.0.0.1:30200/oidc/auth"
+      #      base-uri: http://localhost:8080/oidc/realms/tenant-{tenantId}/protocol/openid-connect
+      #      authorization-uri: http://localhost:8080/oidc/realms/tenant-{tenantId}/protocol/openid-connect/auth
+      #      logout-uri: http://localhost:8080/oidc/realms/tenant-{tenantId}/protocol/openid-connect/logout
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+      client-id: "oauth2-proxy"
+      client-secret: "none"
+      user-name-attribute: "preferred_username"
 
-management.endpoint.gateway.enabled: "true"
+security.authentication.enabled: "true"
 
+logging.level.root: "WARN"
+logging.level.org.springframework: "DEBUG"
 
-#spring.cloud.gateway.routes=[{id=baeldung_route, uri=http://baeldung.com/spring-cloud-gateway, predicates=[Path=/baeldung]}]
+logging.level.org.goafabric: "INFO"
+logging.level.org.flywaydb.core: "INFO"
+logging.level.org.hibernate.SQL: "INFO"
