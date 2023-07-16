@@ -1,0 +1,29 @@
+services:
+  gateway:
+    environment:
+      spring.security.oauth2.authorization-uri: "http://127.0.0.1:30200/oidc/auth"
+      spring.security.oauth2.base-uri: "http://auth-server:8080/oidc"
+
+      spring.security.oauth2.user-name-attribute: "sub"
+      spring.security.oauth2.client-id: "oauth2-proxy"
+      spring.security.oauth2.client-secret: "none"
+
+
+  auth-server:
+    container_name: auth-server
+    image: goafabric/spring-auth-server-native${_Values_server_arch}:1.0.2
+    restart: 'no'
+    ports:
+      - "30200:8080"
+    command: [ "-Xmx32m" ]
+    environment:
+      #application
+      server.forward-headers-strategy: FRAMEWORK
+      server.port: 8080
+
+      #auth
+      spring.security.authorization.base-uri: "/oidc"
+      spring.security.authorization.clients: "oauth2-proxy:none"
+      spring.security.authorization.users: "user1:user1,user2:user2,user3:user3,user4:user4"
+    networks:
+      - ${_Values_root_name}-net

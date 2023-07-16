@@ -1,0 +1,69 @@
+services:
+  gateway:
+    environment:
+      spring.security.oauth2.authorization-uri: "http://localhost:30200/oidc/realms/tenant-{tenantId}/protocol/openid-connect/auth"
+      spring.security.oauth2.logout-uri: "http://localhost:30200/oidc/realms/tenant-{tenantId}/protocol/openid-connect/logout"
+      spring.security.oauth2.base-uri: "http://keycloak:8080/oidc/realms/tenant-{tenantId}/protocol/openid-connect"
+
+      spring.security.oauth2.user-name-attribute: "preferred_username"
+      spring.security.oauth2.client-id: "oauth2-proxy"
+      spring.security.oauth2.client-secret: "none"
+
+  keycloak:
+    container_name: auth-server
+    image:  quay.io/keycloak/keycloak:20.0.2
+
+    restart: 'no'
+    ports:
+      - "30200:8080"
+    command: start --import-realm
+    healthcheck:
+      test: "curl -f http://localhost:8080/oidc/realms/master|| exit 1"
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+    networks:
+      - ${_Values_root_name}-net
+    environment:
+      #application
+      - TZ=Europe/Berlin
+      - JAVA_OPTS=-Xmx256m
+      - KC_HTTP_RELATIVE_PATH=oidc
+      - KC_PROXY=edge
+#      - KC_HOSTNAME_STRICT=false
+      - KC_HOSTNAME_STRICT_HTTPS=false
+      - KC_HOSTNAME=localhost:8080
+
+      #secrets
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+
+      #database
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://keycloak-postgres/keycloak
+      - KC_DB_USERNAME=keycloak
+      - KC_DB_PASSWORD=keycloak
+
+    volumes:
+      - ./realm-config:/opt/keycloak/data/import
+
+    depends_on:
+      - keycloak-postgres
+
+  keycloak-postgres:
+    container_name: keycloak-postgres
+    image: postgres:15.3
+    restart: 'no'
+    ports:
+      - 5432
+    environment:
+      - TZ=Europe/Berlin
+      - POSTGRES_USER=keycloak
+      - POSTGRES_PASSWORD=keycloak
+      - POSTGRES_DB=keycloak
+    command: postgres -c 'shared_buffers=64MB' -c 'max_connections=30' -c 'shared_preload_libraries=pg_stat_statements'
+    volumes:
+      - kcdata:/var/lib/postgresql/data
+    networks:
+      - ${_Values_root_name}-net
