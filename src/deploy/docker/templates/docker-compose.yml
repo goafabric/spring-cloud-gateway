@@ -46,8 +46,8 @@ services:
     image:  goafabric/spring-cloud-gateway:1.0.0-auth-SNAPSHOT
 #    image:  goafabric/spring-cloud-gateway-native${_Values_server_arch}:1.0.0-SNAPSHOT
     restart: 'no'
-    ports:
-      - "8080:8080"
+#    ports:
+#      - "8080:8080"
     command: -Xmx32m
     
     volumes:
@@ -68,7 +68,7 @@ services:
     image: nginx:1.22.1
     restart: 'no'
     ports:
-      - 8081:80
+      - 8080:80
     networks:
       - ${_Values_root_name}-net
     volumes:
@@ -80,6 +80,7 @@ services:
 volumes:
     tmp:
     applogs:
+    kcdata:
 
 networks:
   callee-service-net:

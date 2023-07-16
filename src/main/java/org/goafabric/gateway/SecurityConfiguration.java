@@ -41,7 +41,8 @@ public class SecurityConfiguration {
             http
                     .authorizeExchange(authorize -> authorize
                             .pathMatchers("/" ,"/actuator/**", loginUri).permitAll()
-                            .anyExchange().authenticated())
+                            .pathMatchers("/callee/**").authenticated()
+                            .anyExchange().permitAll())
                     .oauth2Login(oauth2 -> oauth2
                             .clientRegistrationRepository(clientRegistrationRepository))
                     .logout(l -> l.logoutSuccessHandler(logoutHandler).logoutUrl("/logout"))
