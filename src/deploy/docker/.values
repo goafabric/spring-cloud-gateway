@@ -9,4 +9,4 @@ _Values_resources_entrypoint_native="/workspace/org.goafabric.calleeservice.Appl
 
 _Values_health_check_disabled=false
 
-_Values_oidc_provider=keycloak #keycloak
+_Values_oidc_provider=auth-server #keycloak
