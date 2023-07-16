@@ -18,7 +18,7 @@ public class CustomGlobalFilter {
     public GlobalFilter globalFilter() {
         return (exchange, chain) -> {
             return ReactiveSecurityContextHolder.getContext()
-                    .filter(c -> c.getAuthentication() != null)
+                    .filter(ctx -> ctx.getAuthentication() != null)
                     .flatMap(c -> {
                         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) c.getAuthentication();
 
