@@ -34,18 +34,19 @@ public class SecurityConfiguration {
     @Bean
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http, TenantClientRegistrationRepository clientRegistrationRepository) throws Exception {
         if (isAuthenticationEnabled) {
+            var loginUrl = "/oauth2/login.html";
             //var logoutHandler = new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
             //logoutHandler.setPostLogoutRedirectUri("{baseUrl}/login.html"); //yeah that's right, we need baseUrl here, because it's an absolute url and below its a relative url - WTF
             http
                     .authorizeExchange(authorize -> authorize
-                            .pathMatchers("/" ,"/actuator/**","/login.html").permitAll()
+                            .pathMatchers("/" ,"/actuator/**", loginUrl).permitAll()
                             .anyExchange().authenticated())
                     .oauth2Login(oauth2 -> oauth2
                             .clientRegistrationRepository(clientRegistrationRepository))
                     //.logout(l -> l.logoutSuccessHandler(logoutHandler))
                     .csrf(c -> c.disable())
                     .exceptionHandling(exception ->
-                            exception.authenticationEntryPoint(new RedirectServerAuthenticationEntryPoint("/login.html")));
+                            exception.authenticationEntryPoint(new RedirectServerAuthenticationEntryPoint(loginUrl)));
         } else {
             http.authorizeExchange(auth -> auth.anyExchange().permitAll()).csrf(csrf -> csrf.disable());
         }
