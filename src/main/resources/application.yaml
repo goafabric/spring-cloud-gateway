@@ -1,14 +1,11 @@
 server:
   port: 8080
-  forward-headers-strategy: FRAMEWORK
 
 management:
   endpoints:
     web:
       exposure:
-        include: "*"
-
-management.endpoint.gateway.enabled: "true"
+        include: "health,prometheus"
 
 spring:
   cloud:
