@@ -3,7 +3,6 @@ package org.goafabric.gateway;
 
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
@@ -19,18 +18,14 @@ public class CustomGlobalFilter {
         return (exchange, chain) -> {
             return ReactiveSecurityContextHolder.getContext()
                     .filter(ctx -> ctx.getAuthentication() != null)
-                    .flatMap(c -> {
-                        OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) c.getAuthentication();
-
-                        String tokenTenant = token.getAuthorizedClientRegistrationId();
-                        if (tokenTenant == null) {
-                            return Mono.error(
-                                    new AccessDeniedException("Invalid token. Tenant is not present in token.")
-                            );
+                    .flatMap(ctx -> {
+                        var authentication = (OAuth2AuthenticationToken) ctx.getAuthentication();
+                        var tenantId = authentication.getAuthorizedClientRegistrationId();
+                        if (tenantId == null) {
+                            return Mono.error(new AccessDeniedException("Invalid token. Tenant is not present in token."));
                         }
 
-                        ServerHttpRequest request = exchange.getRequest().mutate()
-                                .header("X-TenantId", tokenTenant).build();
+                        var request = exchange.getRequest().mutate().header("X-TenantId", tenantId).build();
 
                         return chain.filter(exchange.mutate().request(request).build());
                     })
