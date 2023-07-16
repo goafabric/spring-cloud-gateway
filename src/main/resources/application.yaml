@@ -10,7 +10,6 @@ management:
 
 management.endpoint.gateway.enabled: "true"
 
-
 spring:
   cloud:
     gateway:
@@ -18,12 +17,6 @@ spring:
         - SaveSession
         - TokenRelay
       routes:
-        - id: baeldung_route
-          uri: http://baeldung.com
-          predicates:
-            - Path=/baeldung/**
-          filters:
-            - RewritePath=/baeldung/(?<path>.*), /$\{path}
         - id: callee_route
           uri: http://localhost:50900
           predicates:
@@ -44,6 +37,8 @@ spring:
 
       client-id: "oauth2-proxy"
       client-secret: "none"
+
+      path-matchers: "/callee/**"
 
 security.authentication.enabled: "true"
 

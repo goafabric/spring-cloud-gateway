@@ -35,6 +35,7 @@ public class SecurityConfiguration {
     @Value("${spring.security.oauth2.client-id}") private String clientId;
     @Value("${spring.security.oauth2.client-secret}") private String clientSecret;
     @Value("${spring.security.oauth2.user-name-attribute:}") private String userNameAttribute;
+    @Value("${spring.security.oauth2.path-matchers}") private String pathMatchers;
 
     @Bean
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http, TenantClientRegistrationRepository clientRegistrationRepository) throws Exception {
@@ -43,12 +44,14 @@ public class SecurityConfiguration {
             var logoutHandler = getLogoutHandler(clientRegistrationRepository, loginUri);
             http
                     .authorizeExchange(authorize -> authorize
-                            .pathMatchers("/callee/**","/core/**","/catalog/**").authenticated()
+                            //.pathMatchers("/callee/**","/core/**","/catalog/**").authenticated()
+                            .pathMatchers(pathMatchers.split(",")).authenticated()
                             .anyExchange().permitAll())
                     .csrf(c -> c.disable())
                     .oauth2Login(oauth2 -> oauth2
                             .clientRegistrationRepository(clientRegistrationRepository))
                     .logout(l -> l.logoutSuccessHandler(logoutHandler)
+                            //reneable logout via get
                             .requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, "/logout")))
                     .exceptionHandling(exception ->
                             exception.authenticationEntryPoint(new RedirectServerAuthenticationEntryPoint(loginUri)));

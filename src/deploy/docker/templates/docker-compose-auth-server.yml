@@ -8,6 +8,7 @@ services:
       spring.security.oauth2.client-id: "oauth2-proxy"
       spring.security.oauth2.client-secret: "none"
 
+      spring.security.oauth2.path-matchers: "/callee/**,/core/**,/catalog/**"
 
   auth-server:
     container_name: auth-server
