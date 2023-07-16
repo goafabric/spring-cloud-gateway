@@ -4,6 +4,7 @@ import io.micrometer.observation.ObservationPredicate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.client.oidc.web.server.logout.OidcClientInitiatedServerLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -11,9 +12,12 @@ import org.springframework.security.oauth2.client.registration.ReactiveClientReg
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationEntryPoint;
+import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,17 +40,16 @@ public class SecurityConfiguration {
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http, TenantClientRegistrationRepository clientRegistrationRepository) throws Exception {
         if (isAuthenticationEnabled) {
             var loginUri = "/login.html";
-            var logoutHandler = new OidcClientInitiatedServerLogoutSuccessHandler(clientRegistrationRepository);
-            logoutHandler.setPostLogoutRedirectUri("{baseUrl}" + loginUri); //yeah that's right, we need baseUrl here, because it's an absolute url and below its a relative url - WTF
+            var logoutHandler = getLogoutHandler(clientRegistrationRepository, loginUri);
             http
                     .authorizeExchange(authorize -> authorize
-                            .pathMatchers("/" ,"/actuator/**", loginUri).permitAll()
                             .pathMatchers("/callee/**","/core/**","/catalog/**").authenticated()
                             .anyExchange().permitAll())
+                    .csrf(c -> c.disable())
                     .oauth2Login(oauth2 -> oauth2
                             .clientRegistrationRepository(clientRegistrationRepository))
-                    .logout(l -> l.logoutSuccessHandler(logoutHandler).logoutUrl("/logout"))
-                    .csrf(c -> c.disable())
+                    .logout(l -> l.logoutSuccessHandler(logoutHandler)
+                            .requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, "/logout")))
                     .exceptionHandling(exception ->
                             exception.authenticationEntryPoint(new RedirectServerAuthenticationEntryPoint(loginUri)));
         } else {
@@ -55,6 +58,12 @@ public class SecurityConfiguration {
         return http.build();
     }
 
+    private static OidcClientInitiatedServerLogoutSuccessHandler getLogoutHandler(TenantClientRegistrationRepository clientRegistrationRepository, String loginUri) throws URISyntaxException {
+        var logoutHandler = new OidcClientInitiatedServerLogoutSuccessHandler(clientRegistrationRepository);
+        logoutHandler.setLogoutSuccessUrl(new URI(loginUri));
+        logoutHandler.setPostLogoutRedirectUri("{baseUrl}" + loginUri);
+        return logoutHandler;
+    }
 
     @Component
     class TenantClientRegistrationRepository implements ReactiveClientRegistrationRepository {
