@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.client.oidc.web.server.logout.OidcClientInitiatedServerLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -34,19 +35,19 @@ public class SecurityConfiguration {
     @Bean
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http, TenantClientRegistrationRepository clientRegistrationRepository) throws Exception {
         if (isAuthenticationEnabled) {
-            var loginUrl = "/oauth2/login.html";
-            //var logoutHandler = new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
-            //logoutHandler.setPostLogoutRedirectUri("{baseUrl}/login.html"); //yeah that's right, we need baseUrl here, because it's an absolute url and below its a relative url - WTF
+            var loginUri = "/login.html";
+            var logoutHandler = new OidcClientInitiatedServerLogoutSuccessHandler(clientRegistrationRepository);
+            logoutHandler.setPostLogoutRedirectUri("{baseUrl}" + loginUri); //yeah that's right, we need baseUrl here, because it's an absolute url and below its a relative url - WTF
             http
                     .authorizeExchange(authorize -> authorize
-                            .pathMatchers("/" ,"/actuator/**", loginUrl).permitAll()
+                            .pathMatchers("/" ,"/actuator/**", loginUri).permitAll()
                             .anyExchange().authenticated())
                     .oauth2Login(oauth2 -> oauth2
                             .clientRegistrationRepository(clientRegistrationRepository))
-                    //.logout(l -> l.logoutSuccessHandler(logoutHandler))
+                    .logout(l -> l.logoutSuccessHandler(logoutHandler).logoutUrl("/logout"))
                     .csrf(c -> c.disable())
                     .exceptionHandling(exception ->
-                            exception.authenticationEntryPoint(new RedirectServerAuthenticationEntryPoint(loginUrl)));
+                            exception.authenticationEntryPoint(new RedirectServerAuthenticationEntryPoint(loginUri)));
         } else {
             http.authorizeExchange(auth -> auth.anyExchange().permitAll()).csrf(csrf -> csrf.disable());
         }
