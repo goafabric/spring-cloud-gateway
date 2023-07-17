@@ -17,7 +17,7 @@ services:
 
   gateway:
     container_name: gateway
-    image:  ${_Values_image_repository}:${_Values_image_tag}
+    image:  ${_Values_image_repository}${_Values_image_native}:${_Values_image_tag}
 #    image:  goafabric/spring-cloud-gateway-native${_Values_server_arch}:1.0.0-SNAPSHOT
     restart: 'no'
     command: -Xmx32m
