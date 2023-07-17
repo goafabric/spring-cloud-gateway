@@ -1,0 +1,2 @@
+- exception handling
+- tenant extraction from hostname or request/query param 
