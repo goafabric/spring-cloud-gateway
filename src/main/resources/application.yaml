@@ -39,8 +39,15 @@ spring:
 
 security.authentication.enabled: "true"
 
+#tracing
+spring.application.name: gateway
+management.tracing.sampling.probability: "1.0"
+logging.level.io.opentelemetry.exporter: "OFF"
+management.otlp.tracing.endpoint: "http://localhost:4318/v1/traces"
+
+#logging
 logging.level.root: "WARN"
-logging.level.org.springframework: "DEBUG"
+logging.level.org.springframework: "INFO"
 
 logging.level.org.goafabric: "INFO"
 logging.level.org.flywaydb.core: "INFO"
