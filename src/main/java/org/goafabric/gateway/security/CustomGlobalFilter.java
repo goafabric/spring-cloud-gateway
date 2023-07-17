@@ -1,4 +1,4 @@
-package org.goafabric.gateway;
+package org.goafabric.gateway.security;
 
 
 import org.springframework.cloud.gateway.filter.GlobalFilter;
