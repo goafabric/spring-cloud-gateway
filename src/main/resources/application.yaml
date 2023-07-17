@@ -10,9 +10,9 @@ management:
 spring:
   cloud:
     gateway:
-      default-filters:
-        - SaveSession
-        - TokenRelay
+#      default-filters:
+#        - SaveSession
+#        - TokenRelay
       routes:
         - id: callee_route
           uri: http://localhost:50900
@@ -22,7 +22,7 @@ spring:
             - RewritePath=/callee/(?<path>.*), /$\{path}
 #            - AddRequestHeader=X-TenantId, 555
 
-  security:
+  security: 
     oauth2:
       base-uri: "http://127.0.0.1:30200/oidc"
       authorization-uri: "http://127.0.0.1:30200/oidc/auth"

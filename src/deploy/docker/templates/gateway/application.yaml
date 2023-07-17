@@ -1,9 +1,6 @@
 spring:
   cloud:
     gateway:
-      default-filters:
-        - SaveSession
-        - TokenRelay
       routes:
         - id: callee_route
           uri: http://callee-service-application:50900
