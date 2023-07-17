@@ -10,9 +10,9 @@ management:
 spring:
   cloud:
     gateway:
-#      default-filters:
-#        - SaveSession
-#        - TokenRelay
+      default-filters:
+        - SaveSession
+        - TokenRelay=Bearer
       routes:
         - id: callee_route
           uri: http://localhost:50900
