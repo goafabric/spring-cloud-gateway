@@ -25,14 +25,16 @@ public class CustomGlobalFilter {
                             return Mono.error(new AccessDeniedException("Invalid token. Tenant is not present in token."));
                         }
 
-                        var request = exchange.getRequest().mutate().header("X-TenantId", tenantId).build();
+                        var request = exchange.getRequest().mutate()
+                                .header("X-TenantId", tenantId)
+                                .header("X-Auth-Request-Preferred-Username", authentication.getName())
+                                .build();
 
                         return chain.filter(exchange.mutate().request(request).build());
                     })
                     .switchIfEmpty(chain.filter(exchange));
 
         };
-
 
     }
 }
