@@ -61,9 +61,18 @@ services:
       TZ: Europe/Berlin
       server.port: "8080"
       spring.config.location: "/usr/share/conf/"
-
       #spring.cloud.gateway.routes: "[{id=callee_route, uri=http://callee-service-application:50900, predicates=Path=/callee/**, filters=RewritePath=/callee/(?<path>.*), /$\\{path}}]"
       #spring.cloud.gateway.routes: "[{id=callee_route, uri=http://callee-service-application:50900, predicates=[Path=/callee/**], filters=[RewritePath=/callee/(?<path>.*), /$\{path}]}]"
+
+      security.authentication.enabled: "true"
+
+      #logging
+      logging.level.root: "WARN"
+      logging.level.org.springframework: "INFO"
+
+      logging.level.org.goafabric: "INFO"
+      logging.level.org.flywaydb.core: "INFO"
+      logging.level.org.hibernate.SQL: "INFO"
 
   nginx:
     container_name: ${_Values_root_name}-nginx

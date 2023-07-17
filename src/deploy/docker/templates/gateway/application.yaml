@@ -1,12 +1,3 @@
-server:
-  port: 8080
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "health,prometheus"
-
 spring:
   cloud:
     gateway:
@@ -20,28 +11,3 @@ spring:
             - Path=/callee/**
           filters:
             - RewritePath=/callee/(?<path>.*), /$\{path}
-#            - AddRequestHeader=X-TenantId, 555
-
-  security:
-    oauth2:
-      base-uri: "http://127.0.0.1:30200/oidc"
-      authorization-uri: "http://127.0.0.1:30200/oidc/auth"
-      user-name-attribute: "sub"
-      #base-uri: http://localhost:30200/oidc/realms/tenant-{tenantId}/protocol/openid-connect
-      #authorization-uri: http://localhost:30200/oidc/realms/tenant-{tenantId}/protocol/openid-connect/auth
-      #logout-uri: http://localhost:30200/oidc/realms/tenant-{tenantId}/protocol/openid-connect/logout
-      #user-name-attribute: "preferred_username"
-
-      client-id: "oauth2-proxy"
-      client-secret: "none"
-
-      path-matchers: "/callee/**"
-
-security.authentication.enabled: "true"
-
-logging.level.root: "WARN"
-logging.level.org.springframework: "DEBUG"
-
-logging.level.org.goafabric: "INFO"
-logging.level.org.flywaydb.core: "INFO"
-logging.level.org.hibernate.SQL: "INFO"

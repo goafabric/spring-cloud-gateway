@@ -31,7 +31,6 @@ public class SecurityConfiguration {
     @Value("${spring.security.oauth2.logout-uri:}") private String logoutUri;
     @Value("${spring.security.oauth2.prefix:}") private String prefix;
 
-
     @Value("${spring.security.oauth2.client-id}") private String clientId;
     @Value("${spring.security.oauth2.client-secret}") private String clientSecret;
     @Value("${spring.security.oauth2.user-name-attribute:}") private String userNameAttribute;
