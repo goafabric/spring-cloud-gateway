@@ -1,4 +1,4 @@
-package org.goafabric.gateway.security;
+package org.goafabric.gateway.authentication;
 
 import io.micrometer.observation.ObservationPredicate;
 import org.springframework.beans.factory.annotation.Value;
