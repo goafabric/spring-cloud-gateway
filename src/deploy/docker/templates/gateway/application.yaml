@@ -11,3 +11,5 @@ spring:
             - Path=/callee/**
           filters:
             - RewritePath=/callee/(?<path>.*), /$\{path}
+
+#spring.webflux.base-path: "/gateway"
