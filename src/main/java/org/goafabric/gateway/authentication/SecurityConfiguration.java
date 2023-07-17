@@ -43,7 +43,6 @@ public class SecurityConfiguration {
             var logoutHandler = getLogoutHandler(clientRegistrationRepository, loginUri);
             http
                     .authorizeExchange(authorize -> authorize
-                            //.pathMatchers("/callee/**","/core/**","/catalog/**").authenticated()
                             .pathMatchers(pathMatchers.split(",")).authenticated()
                             .anyExchange().permitAll())
                     .csrf(c -> c.disable())
